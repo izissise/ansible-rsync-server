@@ -1,0 +1,54 @@
+---
+
+- name: Ensure rsync is installed
+  become: yes
+  apt:
+    name: "rsync"
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+
+- name: Extract rrsync
+  become: yes
+  unarchive:
+    src: "/usr/share/doc/rsync/scripts/rrsync.gz"
+    dest: "{{ rsync_server_rrsync_path }}"
+    mode: 'u=rx,g=rx,o=rx'
+    remote_src: yes
+
+# Create user
+- name: Create {{ rsync_server_user }} user
+  user:
+    name: "{{ rsync_server_user }}"
+    create_home: yes
+    non_unique: yes
+    shell: "{{ rsync_server_rrsync_path }}"
+    state: present
+  register: rsync_server_user_info
+
+# Create root directory
+- name: Ensure {{ rsync_server_root_directory }} paths exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0750
+    owner: "{{ rsync_server_user }}"
+    group: "{{ rsync_server_user }}"
+  with_items:
+    - "{{ rsync_server_root_directory }}"
+
+# Create user .ssh directory
+- name: Create {{ rsync_server_user }} .ssh directory
+  file:
+    path: "{{ rsync_server_user_info.home }}/.ssh"
+    state: directory
+    mode: 0700
+    owner: "{{ rsync_server_user }}"
+    group: "{{ rsync_server_user }}"
+
+# Create .ssh/authorized_keys
+- name: Generate {{ rsync_server_user }} authorized_keys
+  template:
+    src: "{{ role_path }}/templates/authorized_keys.j2"
+    dest: "{{ rsync_server_user_info.home }}/.ssh/authorized_keys"
+    mode: 0600

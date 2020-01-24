@@ -1,0 +1,23 @@
+# The authorized public key list
+# The name of the key will also be used
+# as the name of the sub-directory in the rsync_server_root_directory
+rsync_server_pub_keys: []
+
+# Client username for the ssh connection and file owning
+# It should be the sole purpose of the user as it will
+# replace the ssh authorized_key file
+rsync_server_user: "rsyncbackup"
+
+# Root directory where to put the backup at
+rsync_server_root_directory: "/backup"
+
+# The location of the rrsync script
+rsync_server_rrsync_path: "/usr/bin/rrsync"
+
+# The extra option to pass to rrsync
+rsync_server_rrsync_options:
+    - "no-agent-forwarding"
+    - "no-port-forwarding"
+    - "no-pty"
+    - "no-user-rc"
+    - "no-X11-forwarding"

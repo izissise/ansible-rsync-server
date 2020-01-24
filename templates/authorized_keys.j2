@@ -1,0 +1,3 @@
+{% for key in rsync_server_pub_keys %}
+command="{{ rsync_server_rrsync_path }} {{ rsync_server_root_directory }}/{{ key.split(' ')[-1] }}",{{ ','.join(rsync_server_rrsync_options) }} {{ key }}
+{% endfor %}
