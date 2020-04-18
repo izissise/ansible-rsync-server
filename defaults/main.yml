@@ -5,7 +5,7 @@ rsync_server_pub_keys: []
 
 # Client username for the ssh connection and file owning
 # It should be the sole purpose of the user as it will
-# replace the ssh authorized_key file
+# be connected to using ssh
 rsync_server_user: "rsyncbackup"
 
 # Root directory where to put the backup at
